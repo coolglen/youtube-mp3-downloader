@@ -1,0 +1,23 @@
+{
+  "name": "youtube-to-mp3",
+  "version": "1.0.0",
+  "description": "Converts Youtube video's to mp3's",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.18.4"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "node-fetch": "^2.2.0",
+    "youtube-mp3-downloader": "^0.5.3"
+  }
+}
