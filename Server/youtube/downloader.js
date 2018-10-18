@@ -23,48 +23,6 @@ YD.on("progress", function(progress) {
 });
 
 
-async function download(url){
-   await getUrlDetails(url).then(details => {
-    const vid = details.items[0];
-    YD.download(vid.id, vid.title);
-   });
-}
-
-async function getUrlDetails(url) {
-      
-    if(isFullUrl(url)){
-        let params = getParameters(url);
-    
-        if(params.list){
-            return {'playlist': 'is playlist'}
-        }else if(params.v){
-            try {
-                 return await ytApi.getVideoData(params.v);
-            } catch (error) {
-                return error
-            }    
-        }else{
-            return {error: 'No video found.'}
-        }
-    }else{
-
-    }
-}
-
-function getParameters(url){
-    const match = url.match(/(\?|\&)([^=]+)([^&]+)/g);
-    let params = {};  
-    for(i in match){       
-        let current = match[i].split('=');        
-        params[current[0].match(/[^&?].*/g)[0]] = current[1];   
-    }
-    return params;
-}
-
-function isFullUrl(url) {
-    return url.match(/www.youtube.com\//g)[0];
-}
 
 module.exports = {
-    download
 }

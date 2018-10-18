@@ -2,22 +2,36 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const downloader = require('./youtube/downloader');
+const youtubeApi = require('./youtube/youtube-api');
 
 const app = express();
 
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
+app.use(express.static('./public'));
 
 
-app.get('/', async (req, res) => {
-    await downloader.download('https://www.youtube.com/watch?v=FnQbyj27-oY');
-    res.send('done');
+app.get('/', (req, res) => {
+
+})
+
+app.post('/youtube-api', (req, res) => {
+
+    if (req.body.videoId) {
+        youtubeApi.getVideoData(req.body.videoId).then(result => {
+            res.json({'video': result})
+        });
+    }else if(req.body.playlistId){
+        youtubeApi.getAllPlaylistData(req.body.playlistId).then(result =>{
+            
+            res.json({'playlist': result})
+        });
+    }
+
+
 })
 
 const port = process.env.PORT || 5000;
-app.listen(port, () =>{
+app.listen(port, () => {
     console.log(`Listening on port: ${port}`);
 });
-
-

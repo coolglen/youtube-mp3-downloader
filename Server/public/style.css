@@ -1,0 +1,35 @@
+[v-cloak] { 
+    display: none; 
+}
+
+main {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 4em;
+}
+
+.is-vcentered {
+    align-items: center
+}
+
+.video-list {
+    margin-top: 3em;
+    background-color: #d2d2d2;
+}
+
+.convert-form {
+    margin-top: 1em; 
+}
+
+.video-container {
+    padding: 0px !important;
+}
+
+.video-container figure {
+    margin-left: 0px !important;
+    margin-right: 1px !important;
+}
+
+.content ul {
+    list-style-type: none;
+}
