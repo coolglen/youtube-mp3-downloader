@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const youtubeApi = require('./youtube/youtube-api');
+const downloader = require('./youtube/downloader');
 
 const app = express();
 
@@ -27,9 +28,17 @@ app.post('/youtube-api', (req, res) => {
             res.json({'playlist': result})
         });
     }
+});
 
+app.post('/download', (req, res) => {
+    res.json(downloader.startDownload(req.body.videoData));
+});
 
-})
+app.post('/progress', (req, res) => {
+
+    const progress = downloader.checkProgress(req.body.videoData.id);
+    res.json(progress);
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

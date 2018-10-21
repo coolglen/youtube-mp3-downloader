@@ -23,6 +23,8 @@ main {
 
 .video-container {
     padding: 0px !important;
+    border-radius: 0px !important;
+    min-width: 550px
 }
 
 .video-container figure {
@@ -32,4 +34,10 @@ main {
 
 .content ul {
     list-style-type: none;
+}
+
+.playlist-item {
+    margin-bottom: 5px !important;
+    margin-top: 0px;
+    margin-left: 1em;
 }

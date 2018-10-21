@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "node tests/testing.js"
   },
   "keywords": [],
   "author": "",
@@ -16,8 +17,11 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "kue": "^0.11.6",
+    "lodash": "^4.17.11",
     "morgan": "^1.9.1",
     "node-fetch": "^2.2.0",
+    "queue": "^4.5.0",
     "youtube-mp3-downloader": "^0.5.3"
   }
 }

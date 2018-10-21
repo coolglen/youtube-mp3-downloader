@@ -37,69 +37,46 @@
                 <button type="submit" class="button is-success">Add</button>
             </div>
         </form>
-        
+
         <div class="content">
-                <ul type="0">
-                  <li v-for="item in videoList">
-                        <div class="box video-container" v-if="item.video">
-                                <article class="media">
-                                  <div class="media-left">
-                                    <figure class="image is-120x90">
-                                      <img :src="item.video.snippet.thumbnails.default.url" alt="Image">
-                                    </figure>
-                                  </div>
-                                  <div class="media-content">
-                                    <div class="content">
-                                        <strong>{{item.video.snippet.title}}</strong> 
-                                        <br>
-                                        <small>Duration: {{formatDuration(item.video.contentDetails.duration)}}</small>
-                                        <br>
-                                        Status: waiting...
-                                        <div class="nav-right is-pulled-right">
-                                            <button class="button is-warning" v-on:click="removeItem(item)">Remove</button>
-                                        </div>
-                                    </div>                           
-                                  </div>
-                                </article>
-                              </div>
-                                
-                              <div class="box video-container" v-if="item.playlist" v-for="video in item.playlist">                              
-                                    <article class="media">
-                                      <div class="media-left">
-                                        <figure class="image is-120x90">
-                                          <img :src="video.snippet.thumbnails.default.url" alt="Image">
-                                        </figure>
-                                      </div>
-                                      <div class="media-content">
-                                        <div class="content">
-                                          <p>
-                                            <strong>{{video.snippet.title}}</strong> 
-                                            <br>
-                                            <small>Duration: {{formatDuration(video.contentDetails.duration)}}</small>
-                                            <br>
-                                            Status: waiting...
-                                            </p>
-                                        </div>
-                                        <nav class="level is-mobile">
-                                          <div class="level-left">
-                                           test
-                                          </div>
-                                        </nav>
-                                      </div>
-                                    </article>
-                                  </div>
+            <ul type="0">
+                <li v-for="item in videoList">
+                    <div class="box video-container" v-if="item.video">
 
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-120x90">
+                                    <img :src="item.video.snippet.thumbnails.default.url" alt="Image">
+                                </figure>
+                            </div>
                             
-                  </li>
+                            <div class="media-content">
+                                <div class="content">
+                                    <strong>{{item.video.snippet.title}}</strong>
+                                    <br>
+                                    <small>Duration: {{formatDuration(item.video.contentDetails.duration)}}</small>
+                                    <br>
+                                    
+                                    <span v-if="item.video.downloadStatus.progress && item.video.downloadStatus.progress.percentage">Status: <progress class="progress is-primary" max="100" :value="item.video.downloadStatus.progress.percentage"> {{Math.floor(item.video.downloadStatus.progress.percentage)}}% </progress></span>
+                                    <span v-else>Status: not started</span>
+                                   
+                                    
+                                    <div class="nav-right is-pulled-right">
+                                        <button class="button is-warning" v-on:click="removeItem(item)">Remove</button>
+                                        <button class="button is-success" v-on:click="downloadItem(item.video)">download</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </li>
+            </ul>
 
-            
-                </ul>
-                
-              </div>
+        </div>
 
-            <form class="convert-form" @submit.prevent="convertVideos">
-                <button class="button is-success is-pulled-right" type="submit">Convert</button>
-            </form>
+        <form class="convert-form" @submit.prevent="convertVideos">
+            <button class="button is-success is-pulled-right" type="submit">Convert</button>
+        </form>
         </div>
     </main>
 
