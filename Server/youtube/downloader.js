@@ -76,6 +76,7 @@ function startDownload(videoData){
         if(err)
             throw err;
         else{
+            jobs[res.videoId] = {...jobs[res.videoId], res}   
         }
     }, progress => jobs[progress.videoId] = progress);
     return jobs[videoData.id]

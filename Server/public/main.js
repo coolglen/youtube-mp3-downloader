@@ -1,41 +1,63 @@
 new Vue({
     el: '#app',
     data: {
-        url: 'https://www.youtube.com/watch?v=09R8_2nJtjg&list=PLzDtLZNk6j-xtyjj1gkbXBAgOC_JuBk4L',
+        url: 'https://www.youtube.com/watch?v=mZMLuJ0_BGA',
         videoList: [],
-        error: ''
+        error: '',
+        loadingVideo: false,
     },
     methods: {
         addUrl() {
+            console.log("add");
+
             this.error = '';
+
             this.getUrlDetails(this.url);
         },
         getUrlDetails(url) {
+            if (!url) {
+                this.error = 'Please enter a valid url.';
+                return
+            }
+            this.loadingVideo = true;
+            this.url = '';
             if (this.isFullUrl(url)) {
                 let params = this.getParameters(url);
+
                 if (params.v) {
+                    for (let i = 0; i < this.videoList.length; i++) {
+                        if (this.videoList[i].video.id == params.v) {
+                            this.error = 'That video is already in the list.';
+                            this.loadingVideo = false;
+                            return;
+                        }
+                    }
                     console.log('fetching ' + params.v);
                     this.apiCall({
                         videoId: params.v
                     }).then(result => {
                         if (result.video) {
-                            console.log(result);
                             result.video.downloadStatus = "waiting";
-
                             this.videoList.unshift(result);
+                            this.loadingVideo = false;
                         } else {
+                            this.loadingVideo = false;
                             this.error = 'No Video Found.'
                         }
                     });
                 } else {
+                    this.loadingVideo = false;
+                    this.error = 'No Video Found.'
                 }
             } else {
+                this.loadingVideo = false;
+                this.error = 'Invalid Url.'
             }
         },
 
         apiCall(option) {
             console.log(option);
-            
+
             return fetch('/youtube-api', {
                 method: 'POST',
                 body: JSON.stringify(option),
@@ -56,7 +78,7 @@ new Vue({
             return params;
         },
         isFullUrl(url) {
-            return url.match(/www.youtube.com\//g)[0];
+            return url.match(/www.youtube.com\//g)[0] ? true : false;
         },
         convertVideos() {
 
@@ -65,48 +87,61 @@ new Vue({
             this.videoList.splice(this.videoList.indexOf(item), 1)
 
         },
-        downloadItem(item){
-            console.log({videoId:item.id});
-            
-            fetch('/download', {
+        convertItem(item) {
+            fetch('/convert', {
                 method: 'POST',
-                body: JSON.stringify({videoData:item}),
+                body: JSON.stringify({
+                    videoData: item
+                }),
                 headers: {
                     'content-type': 'application/json'
                 }
             }).then(response => response.json()).then(result => {
-                item.downloadStatus = result; 
-                this.checkProgress(item)                            
+                item.downloadStatus = result;
+                console.log(result);
+
+                this.checkProgress(item)
             });
         },
-        checkProgress(item){
-             
+        downloadItem(item) {
+            fetch(`/download/?path=${item.downloadStatus.res.file}`, {
+                method: 'GET',
+            }).then(resp => resp.blob()).then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = item.downloadStatus.res.title;
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();
+                a.remove();
+            });
+        },
+        checkProgress(item) {
+
             fetch('/progress', {
                 method: 'POST',
-                body: JSON.stringify({videoData:item}),
+                body: JSON.stringify({
+                    videoData: item
+                }),
                 headers: {
                     'content-type': 'application/json'
                 }
             }).then(response => response.json()).then(result => {
-                item.downloadStatus = result;                             
+                item.downloadStatus = result;
             });
-            console.log(item.downloadStatus.progress);
-            
-            if(item.downloadStatus.progress.percentage != 100){
-                
+            console.log(item.downloadStatus);
+
+            if (!item.downloadStatus.res) {
+
                 setTimeout(() => this.checkProgress(item), 2000);
             }
         },
         formatDuration(durationString) {
             return durationString.match(/[^A-Z]\d*/g).join(':');
-        },
-        round(num){
-            return Math.round(num);
         }
 
     },
     mounted() {
-
 
     },
 

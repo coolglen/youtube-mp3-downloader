@@ -30,7 +30,7 @@ app.post('/youtube-api', (req, res) => {
     }
 });
 
-app.post('/download', (req, res) => {
+app.post('/convert', (req, res) => {
     res.json(downloader.startDownload(req.body.videoData));
 });
 
@@ -39,6 +39,13 @@ app.post('/progress', (req, res) => {
     const progress = downloader.checkProgress(req.body.videoData.id);
     res.json(progress);
 });
+
+app.get('/download/',(req, res) => {
+    console.log("here");
+    
+    console.log(req.query.path);
+    res.sendFile(__dirname +"\\"+ req.query.path);
+})
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
